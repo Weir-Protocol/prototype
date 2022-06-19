@@ -17,7 +17,7 @@ const Navbar = () => {
 
   return (
     <div className="w-full max-w-[1440px] mx-auto px-[32px] md:px-[64px] xl:px-[120px] shadow">
-      <header className="w-full flex items-center justify-between bg-[#2c2f36] py-[15px]">
+      <header className="w-full flex items-center justify-between bg-background py-[15px]">
         <div className="flex flex-1">
           <nav className="flex flex-1">
             <h1 className="flex-1 lg:flex-auto text-lg mr-[20px] font-bold text-white whitespace-nowrap">
