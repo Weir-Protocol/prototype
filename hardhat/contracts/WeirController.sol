@@ -7,34 +7,73 @@ import "./interfaces/IRouter.sol";
 import "./interfaces/IWeirInit.sol";
 
 contract WeirController is IWeirInit, Initializable {
-    bool outcome;
     address oracle;
-    address swapRouter;
-    
+    address router;
+
+    bool public releasedLiquidity;
     WeirParams public weirData;
 
-    function isDeadlineOver() external view returns(bool) {
+    event liquidityReleased(address liquidityPool, uint amountD, uint amountS);
+    event refundedTokens(address dao, uint amount);
+
+    modifier onlyOracle {
+        require(msg.sender == oracle, "Not oracle");
+        _;
+    }
+
+    modifier onlyDAO {
+        require(msg.sender == weirData.dao, "Not DAO");
+        _;
+    }
+
+    function isDeadlineOver() public view returns(bool) {
         return block.timestamp > weirData.deadline;
     }
 
     function initialize(
         WeirParams calldata _weirData,
         address _oracle,
-        address _swapRouter
+        address _router
     ) 
         external 
         initializer     
     {
         weirData = _weirData;
         oracle = _oracle;
-        swapRouter = _swapRouter;
+        router = _router;
     }
 
-    // function releaseLiquidity() private {
-    //     IRouter(swapRouter).addLiquidity(daoToken, stablecoin, amountADesired, amountBDesired, amountAMin, amountBMin, to, deadline);
-    // }
+    function postResult(bool outcome, uint stablecoinAmount) external onlyOracle {
+        require(isDeadlineOver() == true, "Active period");
+        if (outcome) {
+            _releaseLiquidity(stablecoinAmount);
+            releasedLiquidity = true;
+            emit liquidityReleased(weirData.liquidityPool, weirData.amount, stablecoinAmount);
+        } else {
+            _refundTokens();
+            emit refundedTokens(weirData.dao, weirData.amount);
+        }
+    }
 
-    // function refundTokens() private {
+    function withdrawTokens() external onlyDAO {
+        require(isDeadlineOver() == true, "Active period");
+        _refundTokens();
+    }
 
-    // }
+    function _releaseLiquidity(uint stablecoinAmount) private {
+        IRouter(router).addLiquidity(
+            weirData.daotoken, 
+            weirData.stablecoin, 
+            weirData.amount, 
+            stablecoinAmount, 
+            weirData.amount, 
+            stablecoinAmount, 
+            weirData.dao, 
+            block.timestamp+200
+        );
+    }
+
+    function _refundTokens() private {
+        IERC20(weirData.daotoken).transfer(weirData.dao, weirData.amount);
+    }
 }
