@@ -120,6 +120,7 @@ describe("Weir Protocol Test", function() {
     it("weir can release liquidity", async () => {
         const weirParams = await weirController.weirData();
         const lpPool = new ethers.Contract(lpAddress, ILiquidityPool.abi, deployer);
+        const initialLPBalance = ethers.utils.formatEther(await lpPool.balanceOf(dao.address));
         
         const initialReserve = await lpPool.getReserves();
         let stablecoinQuote = await router.quote(
@@ -136,7 +137,11 @@ describe("Weir Protocol Test", function() {
             stablecoinQuote
         );
         const finalReserve = await lpPool.getReserves();
+        const finalLPBalance = ethers.utils.formatEther(await lpPool.balanceOf(dao.address));
 
+        expect(
+            parseInt(finalLPBalance) - parseInt(initialLPBalance)
+        ).to.be.greaterThan(0);
         expect(
             parseFloat(ethers.utils.formatEther(finalReserve.reserve0)) - 
             parseFloat(ethers.utils.formatEther(initialReserve.reserve0))

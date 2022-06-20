@@ -21,13 +21,13 @@ contract WeirController is IWeirInit, Initializable {
         _;
     }
 
-    constructor() {
-        _disableInitializers();
-    }
-
     modifier onlyDAO {
         require(msg.sender == weirData.dao, "Not DAO");
         _;
+    }
+
+    constructor() {
+        _disableInitializers();
     }
 
     function isDeadlineOver() public view returns(bool) {
