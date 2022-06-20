@@ -12,7 +12,7 @@ contract WeirFactory is Ownable {
     address public oracle;
     address public router;
     address public immutable baseImplementation;
-    mapping(address => address) public tokenWeir;
+    mapping(address => address) public getWeirOfToken;
 
     event createdNewWeir(address dao, string daoName, address weir);
 
@@ -45,7 +45,7 @@ contract WeirFactory is Ownable {
         external 
     {
         address newWeir = Clones.clone(baseImplementation);
-        tokenWeir[initData.daotoken] = newWeir;
+        getWeirOfToken[initData.daotoken] = newWeir;
         WeirController(newWeir).initialize(initData, oracle, router);
         IERC20(initData.daotoken).transferFrom(msg.sender, newWeir, initData.amount);
         IERC20(initData.daotoken).transferFrom(msg.sender, treasury, initData.amount / 2);

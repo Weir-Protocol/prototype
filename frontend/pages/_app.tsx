@@ -1,4 +1,4 @@
-import { CeloProvider } from "@celo/react-celo";
+import { CeloProvider, Alfajores, NetworkNames } from "@celo/react-celo";
 import { ChakraProvider } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
 
@@ -14,6 +14,14 @@ function MyApp({ Component, pageProps }: AppProps) {
           description: "Lorem Ipsum Dolor",
           url: "http://localhost:3000/",
           icon: "",
+        }}
+        networks={[Alfajores]}
+        network={{
+          name: NetworkNames.Alfajores,
+          rpcUrl: 'https://alfajores-forno.celo-testnet.org',
+          graphQl: 'https://alfajores-blockscout.celo-testnet.org/graphiql',
+          explorer: 'https://alfajores-blockscout.celo-testnet.org',
+          chainId: 44787,
         }}
       >
         <Component {...pageProps} />;
