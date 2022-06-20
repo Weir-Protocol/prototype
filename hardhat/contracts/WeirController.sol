@@ -21,6 +21,10 @@ contract WeirController is IWeirInit, Initializable {
         _;
     }
 
+    constructor() {
+        _disableInitializers();
+    }
+
     modifier onlyDAO {
         require(msg.sender == weirData.dao, "Not DAO");
         _;
@@ -43,7 +47,7 @@ contract WeirController is IWeirInit, Initializable {
         router = _router;
     }
 
-    function postResult(bool outcome, uint stablecoinAmount) external onlyOracle {
+    function postVoteResult(bool outcome, uint stablecoinAmount) external onlyOracle {
         require(isDeadlineOver() == true, "Active period");
         if (outcome) {
             _releaseLiquidity(stablecoinAmount);
@@ -61,6 +65,14 @@ contract WeirController is IWeirInit, Initializable {
     }
 
     function _releaseLiquidity(uint stablecoinAmount) private {
+        IERC20(weirData.daotoken).approve(
+            router,
+            weirData.amount
+        );
+        IERC20(weirData.stablecoin).approve(
+            router,
+            stablecoinAmount
+        );
         IRouter(router).addLiquidity(
             weirData.daotoken, 
             weirData.stablecoin, 
@@ -69,7 +81,7 @@ contract WeirController is IWeirInit, Initializable {
             weirData.amount, 
             stablecoinAmount, 
             weirData.dao, 
-            block.timestamp+200
+            block.timestamp+300
         );
     }
 

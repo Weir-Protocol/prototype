@@ -2,10 +2,11 @@
   "name": "hardhat-project",
   "version": "1.0.0",
   "scripts": {
-    "compile": "npx hardhat compile",
-    "test": "npx hardhat test",
     "chain": "npx hardhat node",
-    "deploy": "npx hardhat run ./scripts/deploy.ts"
+    "clean": "npx hardhat clean",
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run ./scripts/deploy.ts --network alfajores",
+    "test": "npx hardhat test --network localhost"
   },
   "license": "MIT",
   "devDependencies": {

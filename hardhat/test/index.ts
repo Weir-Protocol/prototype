@@ -1,19 +1,149 @@
+import { Wallet, utils  } from 'ethers'
+import { Contract } from "@ethersproject/contracts";
+import { ethers, waffle, network } from "hardhat";
+import { providers } from "ethers";
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { describe } from "mocha";
+import {
+    ERC20,
+    WeirFactory,
+    WeirController
+} from "../typechain";
+import * as IRouter from "../artifacts/contracts/interfaces/IRouter.sol/IRouter.json";
+import * as ILPFactory from "../artifacts/contracts/interfaces/ILPFactory.sol/ILPFactory.json";
+import * as ILiquidityPool from "../artifacts/contracts/interfaces/ILiquidityPool.sol/ILiquidityPool.json";
 
-// describe("Greeter", function () {
-//   it("Should return the new greeting once it's changed", async function () {
-//     const Greeter = await ethers.getContractFactory("Greeter");
-//     const greeter = await Greeter.deploy("Hello, world!");
-//     await greeter.deployed();
+const routerAddress = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
+const LPFactoryAddress = "0x62d5b84bE28a183aBB507E125B384122D2C25fAE";
 
-//     expect(await greeter.greet()).to.equal("Hello, world!");
+describe("Weir Protocol Test", function() {
+    let dao: Wallet,
+        oracle: Wallet,
+        router: Contract,
+        daotoken: ERC20,
+        deployer: Wallet,
+        treasury: Wallet,
+        stablecoin: ERC20,
+        lpAddress: string,
+        weirFactory: WeirFactory,
+        weirController: WeirController;
 
-//     const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
+    const createFixtureLoader = waffle.createFixtureLoader;
+    const fixture = async () => {
+        const _DAOtoken = await ethers.getContractFactory("DAOtoken");
+        daotoken = await _DAOtoken.connect(dao).deploy() as ERC20;
+        await daotoken.deployed();
 
-//     // wait until the transaction is mined
-//     await setGreetingTx.wait();
+        const _Stablecoin = await ethers.getContractFactory("Stablecoin");
+        stablecoin = await _Stablecoin.connect(treasury).deploy() as ERC20;
+        await stablecoin.deployed();
 
-//     expect(await greeter.greet()).to.equal("Hola, mundo!");
-//   });
-// });
+        const _WeirFactory = await ethers.getContractFactory("WeirFactory");
+        weirFactory = await _WeirFactory.deploy(treasury.address, oracle.address, routerAddress) as WeirFactory;
+        await weirFactory.deployed();
+    };
+    let loadFixture: ReturnType<typeof createFixtureLoader>;
+
+    before('create fixture loader', async () => {
+        [deployer, treasury, dao, oracle] = await (ethers as any).getSigners();
+        loadFixture = createFixtureLoader([deployer, treasury, dao, oracle]);
+    });
+
+    beforeEach('deploy contracts', async () => {
+        await loadFixture(fixture);  
+        
+        const amount = 10000;
+        await stablecoin.connect(treasury).transfer(
+            dao.address, 
+            ethers.utils.parseEther((amount / 4).toString())
+        );
+        router = new ethers.Contract(routerAddress, IRouter.abi, deployer);
+        await daotoken.connect(dao).approve(
+            router.address,
+            ethers.utils.parseEther(amount.toString())
+        );
+        await stablecoin.connect(dao).approve(
+            router.address,
+            ethers.utils.parseEther((amount / 4).toString())
+        );
+        await router.connect(dao).addLiquidity(
+            daotoken.address,
+            stablecoin.address,
+            ethers.utils.parseEther(amount.toString()),
+            ethers.utils.parseEther((amount / 4).toString()),
+            ethers.utils.parseEther(amount.toString()),
+            ethers.utils.parseEther((amount / 4).toString()),
+            dao.address,
+            Math.ceil((new Date).valueOf()/1000)+300
+        );
+
+        const lpFactory = new ethers.Contract(LPFactoryAddress, ILPFactory.abi, deployer);
+        lpAddress = await lpFactory.getPair(daotoken.address, stablecoin.address);
+
+        await daotoken.connect(dao).approve(weirFactory.address, ethers.utils.parseEther((amount * 1.5).toString()));
+        const weirParams = {
+            dao: dao.address,
+            daotoken: daotoken.address,
+            stablecoin: stablecoin.address,
+            liquidityPool: lpAddress,
+            amount: ethers.utils.parseEther(amount.toString()),
+            deadline: Math.ceil((new Date).valueOf()/1000)-100,
+            daoName: "SampleDAO"
+        };
+
+        await weirFactory.connect(dao).createWeir(weirParams);
+        const weirAddress = await weirFactory.tokenWeir(daotoken.address);
+        const _WeirController = await ethers.getContractFactory("WeirController");
+        weirController = _WeirController.attach(weirAddress) as WeirController;
+    });
+
+    it('contracts deploy successfully', async () => {
+        expect(daotoken.address).to.not.be.undefined;
+        expect(stablecoin.address).to.not.be.undefined;
+        expect(weirFactory.address).to.not.be.undefined;
+    });
+
+    it('factory can create a new weir', async () => {
+        expect(await weirFactory.tokenWeir(daotoken.address)).to.not.be.equal(ethers.constants.AddressZero);
+    });
+
+    it("weir params can be retrieved", async () => {
+        const weirParams = await weirController.weirData();
+        const releasedLiquidity = await weirController.releasedLiquidity();
+        expect(releasedLiquidity).to.be.equal(false);
+        expect(weirParams.dao).to.be.equal(dao.address);
+        expect(weirParams.daotoken).to.be.equal(daotoken.address);
+        expect(weirParams.stablecoin).to.be.equal(stablecoin.address);
+        expect(weirParams.daoName).to.be.equal("SampleDAO");
+    });
+
+    it("weir can release liquidity", async () => {
+        const weirParams = await weirController.weirData();
+        const lpPool = new ethers.Contract(lpAddress, ILiquidityPool.abi, deployer);
+        
+        const initialReserve = await lpPool.getReserves();
+        let stablecoinQuote = await router.quote(
+            weirParams.amount,
+            initialReserve.reserve0,
+            initialReserve.reserve1
+        );
+        await stablecoin.connect(treasury).transfer(
+            weirController.address,
+            stablecoinQuote
+        );
+        await weirController.connect(oracle).postVoteResult(
+            true,
+            stablecoinQuote
+        );
+        const finalReserve = await lpPool.getReserves();
+
+        expect(
+            parseFloat(ethers.utils.formatEther(finalReserve.reserve0)) - 
+            parseFloat(ethers.utils.formatEther(initialReserve.reserve0))
+        ).to.be.equal(10000);
+        expect(
+            parseFloat(ethers.utils.formatEther(finalReserve.reserve1)) - 
+            parseFloat(ethers.utils.formatEther(initialReserve.reserve1))
+        ).to.be.equal(2500);
+    });
+});
