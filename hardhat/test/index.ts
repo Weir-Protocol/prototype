@@ -13,6 +13,7 @@ import * as IRouter from "../artifacts/contracts/interfaces/IRouter.sol/IRouter.
 import * as ILPFactory from "../artifacts/contracts/interfaces/ILPFactory.sol/ILPFactory.json";
 import * as ILiquidityPool from "../artifacts/contracts/interfaces/ILiquidityPool.sol/ILiquidityPool.json";
 
+const amount = 10000;
 const routerAddress = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
 const LPFactoryAddress = "0x62d5b84bE28a183aBB507E125B384122D2C25fAE";
 
@@ -52,7 +53,6 @@ describe("Weir Protocol Test", function() {
     beforeEach('deploy contracts', async () => {
         await loadFixture(fixture);  
         
-        const amount = 10000;
         await stablecoin.connect(treasury).transfer(
             dao.address, 
             ethers.utils.parseEther((amount / 4).toString())
@@ -92,7 +92,7 @@ describe("Weir Protocol Test", function() {
         };
 
         await weirFactory.connect(dao).createWeir(weirParams);
-        const weirAddress = await weirFactory.tokenWeir(daotoken.address);
+        const weirAddress = await weirFactory.getWeirOfToken(daotoken.address);
         const _WeirController = await ethers.getContractFactory("WeirController");
         weirController = _WeirController.attach(weirAddress) as WeirController;
     });
@@ -104,7 +104,7 @@ describe("Weir Protocol Test", function() {
     });
 
     it('factory can create a new weir', async () => {
-        expect(await weirFactory.tokenWeir(daotoken.address)).to.not.be.equal(ethers.constants.AddressZero);
+        expect(await weirFactory.getWeirOfToken(daotoken.address)).to.not.be.equal(ethers.constants.AddressZero);
     });
 
     it("weir params can be retrieved", async () => {
@@ -140,10 +140,10 @@ describe("Weir Protocol Test", function() {
         expect(
             parseFloat(ethers.utils.formatEther(finalReserve.reserve0)) - 
             parseFloat(ethers.utils.formatEther(initialReserve.reserve0))
-        ).to.be.equal(10000);
+        ).to.be.equal(amount);
         expect(
             parseFloat(ethers.utils.formatEther(finalReserve.reserve1)) - 
             parseFloat(ethers.utils.formatEther(initialReserve.reserve1))
-        ).to.be.equal(2500);
+        ).to.be.equal(amount / 4);
     });
 });
