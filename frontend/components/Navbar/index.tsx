@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { useState } from "react";
+import { useCelo } from "@celo/react-celo";
+import { useToast } from "@chakra-ui/react";
 
 const navLinks: { text: string; link: string }[] = [
   {
@@ -14,6 +16,30 @@ const navLinks: { text: string; link: string }[] = [
 
 const Navbar = () => {
   const [navbarVisible, setNavbarVisible] = useState<boolean>(false);
+
+  const { connect, address } = useCelo();
+  const toast = useToast();
+
+  const connectWallet = async () => {
+    try {
+      await connect();
+      toast({
+        title: "Wallet Connected",
+        description: `We've connected your wallet with address ${address}`,
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Wallet Connection failed",
+        description: error?.message ?? "",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <div className="w-full max-w-[1440px] mx-auto px-[32px] md:px-[64px] xl:px-[120px] shadow">
@@ -38,8 +64,14 @@ const Navbar = () => {
           <span className="px-[20px] py-[5px] text-orange-500 bg-orange-500 bg-opacity-[20%] rounded-[5px]">
             CELO
           </span>
-          <button className="bg-blue-500 text-white px-[20px] py-[5px] rounded-[5px] ml-[20px]">
-            Connect to a wallet
+          <button
+            className="bg-blue-500 text-white px-[20px] py-[5px] rounded-[5px] ml-[20px]"
+            suppressHydrationWarning
+            onClick={connectWallet}
+          >
+            {address
+              ? `${address?.slice(0, 5)}...${address?.slice(-5)}`
+              : "Connect to a wallet"}
           </button>
         </div>
         <div
