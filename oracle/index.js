@@ -1,11 +1,15 @@
 require('dotenv').config();
 
-import express, { json } from 'express';
-import { connect, connection } from 'mongoose';
+const express = require('express');
+const mongoose = require('mongoose');
 const mongoString = process.env.DATABASE_URL;
+const routes = require('./routes/routes');
 
-connect(mongoString);
-const database = connection;
+mongoose.connect(mongoString,{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+const database = mongoose.connection;
 
 database.on('error', (error) => {
     console.log(error)
@@ -16,7 +20,9 @@ database.once('connected', () => {
 })
 const app = express();
 
-app.use(json());
+app.use(express.json());
+app.use('/',routes)
+
 
 app.listen(3000, () => {
     console.log(`Server Started at ${3000}`)
