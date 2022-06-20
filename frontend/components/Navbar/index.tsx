@@ -17,7 +17,7 @@ const navLinks: { text: string; link: string }[] = [
 const Navbar = () => {
   const [navbarVisible, setNavbarVisible] = useState<boolean>(false);
 
-  const { connect, address } = useCelo();
+  const { connect, address, destroy } = useCelo();
   const toast = useToast();
 
   const connectWallet = async () => {
@@ -61,17 +61,18 @@ const Navbar = () => {
           </nav>
         </div>
         <div className="hidden flex-1 lg:flex items-center justify-end">
-          <span className="px-[20px] py-[5px] text-orange-500 bg-orange-500 bg-opacity-[20%] rounded-[5px]">
-            CELO
+          <span
+            suppressHydrationWarning
+            className="px-[20px] py-[5px] text-orange-500 bg-orange-500 bg-opacity-[20%] rounded-[5px]"
+          >
+            {address ? "Alfajores" : "Not Connected"}
           </span>
           <button
             className="bg-blue-500 text-white px-[20px] py-[5px] rounded-[5px] ml-[20px]"
             suppressHydrationWarning
-            onClick={connectWallet}
+            onClick={address ? destroy : connectWallet}
           >
-            {address
-              ? `${address?.slice(0, 5)}...${address?.slice(-5)}`
-              : "Connect to a wallet"}
+            {address ? `Disconnect wallet` : "Connect to a wallet"}
           </button>
         </div>
         <div
