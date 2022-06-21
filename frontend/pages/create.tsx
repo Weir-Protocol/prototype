@@ -1,6 +1,9 @@
 import { Button, FormLabel, Input, Select } from "@chakra-ui/react";
 import { FormEventHandler, KeyboardEventHandler, useState } from "react";
 import DefaultLayout from "../layouts/DefaultLayout";
+import {doc} from '@firebase/firestore'
+import {setDoc} from 'firebase/firestore'
+import {firestore} from  '../firebase/firebase'
 
 const Create = () => {
   const [DAOName, setDAOName] = useState<string>("");
@@ -15,10 +18,11 @@ const Create = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit: FormEventHandler = (e) => {
+  const handleSubmit: FormEventHandler = async(e) => {
     setLoading(true);
     e.preventDefault();
-    console.log({
+    const _dao = doc(firestore,`DAO/${DAOTokenAddress}`)
+    const dao_data = {
       DAOName,
       DAOTokenAddress,
       DAOTokenAmount,
@@ -28,7 +32,15 @@ const Create = () => {
       whitelistedText,
       whitelisted,
       stableCoin,
-    });
+    }
+    try {
+      await setDoc(_dao,dao_data)
+      console.log("added to db")
+      
+    }
+    catch(error){
+      console.log("error",error)
+    }
     setTimeout(() => setLoading(false), 3000);
   };
 
