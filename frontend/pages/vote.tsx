@@ -1,6 +1,7 @@
 import { useCelo } from "@celo/react-celo";
 import { Button, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import DefaultLayout from "../layouts/DefaultLayout";
 
 const Vote = () => {
@@ -8,17 +9,20 @@ const Vote = () => {
   const { address } = useCelo();
   const toast = useToast();
 
-  if (!address) {
-    toast({
-      title: "Connect your wallet",
-      description:
-        "Please connect your wallet before accessing the voting page",
-      status: "error",
-      duration: 9000,
-      isClosable: true,
-    });
-    router.push("/");
-  }
+  useEffect(() => {
+    if (!address) {
+      toast({
+        title: "Connect your wallet",
+        description:
+          "Please connect your wallet before accessing the voting page",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      router.push("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
 
   return (
     <DefaultLayout>
@@ -65,11 +69,13 @@ const Vote = () => {
           </div>
           <div className="flex-1 flex flex-col items-start justify-start">
             <h3 className="text-lg font-bold mt-[30px] mb-[15px]">Vote</h3>
-            <div className="flex items-center">
-              <Button colorScheme="twitter" className="mr-[20px]">
+            <div className="flex flex-col items-center md:max-w-[250px] w-full">
+              <Button colorScheme="twitter" className="w-full">
                 Yes
               </Button>
-              <Button colorScheme="red">No</Button>
+              <Button colorScheme="red" className="w-full mt-[20px]">
+                No
+              </Button>
             </div>
           </div>
         </div>

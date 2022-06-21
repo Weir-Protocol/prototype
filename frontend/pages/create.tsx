@@ -1,9 +1,18 @@
-import { Button, FormLabel, Input, Select } from "@chakra-ui/react";
-import { FormEventHandler, KeyboardEventHandler, useState } from "react";
+import { Button, FormLabel, Input, Select, useToast } from "@chakra-ui/react";
+import {
+  FormEventHandler,
+  KeyboardEventHandler,
+  useEffect,
+  useState,
+} from "react";
+import { useRouter } from "next/router";
+import { useCelo } from "@celo/react-celo";
+
 import DefaultLayout from "../layouts/DefaultLayout";
-import {doc} from '@firebase/firestore'
-import {setDoc} from 'firebase/firestore'
-import {firestore} from  '../firebase/firebase'
+
+import { doc } from "@firebase/firestore";
+import { setDoc } from "firebase/firestore";
+import { firestore } from "../firebase/firebase";
 
 const Create = () => {
   const [DAOName, setDAOName] = useState<string>("");
@@ -18,10 +27,29 @@ const Create = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit: FormEventHandler = async(e) => {
+  const router = useRouter();
+  const { address } = useCelo();
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!address) {
+      toast({
+        title: "Connect your wallet",
+        description:
+          "Please connect your wallet before accessing the create page",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      router.push("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
+
+  const handleSubmit: FormEventHandler = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const _dao = doc(firestore,`DAO/${DAOTokenAddress}`)
+    const _dao = doc(firestore, `DAO/${DAOTokenAddress}`);
     const dao_data = {
       DAOName,
       DAOTokenAddress,
@@ -32,14 +60,12 @@ const Create = () => {
       whitelistedText,
       whitelisted,
       stableCoin,
-    }
+    };
     try {
-      await setDoc(_dao,dao_data)
-      console.log("added to db")
-      
-    }
-    catch(error){
-      console.log("error",error)
+      await setDoc(_dao, dao_data);
+      console.log("added to db");
+    } catch (error) {
+      console.log("error", error);
     }
     setTimeout(() => setLoading(false), 3000);
   };
