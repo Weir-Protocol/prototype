@@ -6,7 +6,7 @@ import { useToast } from "@chakra-ui/react";
 const navLinks: { text: string; link: string }[] = [
   {
     text: "Create",
-    link: "/",
+    link: "/create",
   },
   {
     text: "Weirs",
@@ -52,7 +52,7 @@ const Navbar = () => {
             <ul className="hidden flex-[2] lg:flex-auto md:flex w-full items-center">
               {navLinks.map(({ link, text }) => (
                 <Link href={link} key={text + link}>
-                  <li>
+                  <li className="cursor-pointer">
                     <a className="px-[10px]">{text}</a>
                   </li>
                 </Link>
@@ -103,7 +103,7 @@ const Navbar = () => {
                 <ul className="flex flex-col  w-full items-start justify-start">
                   {navLinks.map(({ link, text }) => (
                     <Link href={link} key={text + link}>
-                      <li>
+                      <li className="cursor-pointer">
                         <a className="my-[10px] text-[18px]">{text}</a>
                       </li>
                     </Link>

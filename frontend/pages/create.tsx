@@ -112,7 +112,7 @@ const Create = () => {
             onChange={(e) => setLiquidityPoolAddress(e.target.value)}
             required
           />
-          <FormLabel className="mt-[10px]" htmlFor="kpiTarget">
+          <FormLabel className="mt-[60px]" htmlFor="kpiTarget">
             KPI Target
           </FormLabel>
           <Input
