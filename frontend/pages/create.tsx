@@ -112,7 +112,7 @@ const Create = () => {
             type="text"
             value={DAOName}
             onChange={(e) => setDAOName(e.target.value)}
-            placeholder="Enter name of the DAO"
+            placeholder="Enter name of your DAO"
             required
           />
           <FormLabel className="mt-[10px]" htmlFor="daoTokenAddress">
@@ -122,7 +122,7 @@ const Create = () => {
             id="daoTokenAddress"
             type="text"
             value={DAOTokenAddress}
-            placeholder="Enter token address of the DAO"
+            placeholder="Enter address of the DAO token"
             onChange={(e) => setDAOTokenAddress(e.target.value)}
             required
           />
@@ -132,7 +132,7 @@ const Create = () => {
           <Input
             id="daoTokenAmount"
             type="text"
-            placeholder="Enter token amount of the DAO"
+            placeholder="Enter amount of DAO tokens to lock-in"
             value={DAOTokenAmount}
             onChange={(e) => setDAOTokenAmount(e.target.value)}
             required
@@ -143,6 +143,7 @@ const Create = () => {
           <Select
             placeholder="Select the stablecoin"
             onChange={(e) => setStableCoin(e.target.value)}
+            required
           >
             <option value="tUSD">tUSD</option>
           </Select>

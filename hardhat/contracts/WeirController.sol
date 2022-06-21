@@ -15,7 +15,6 @@ contract WeirController is IWeirInit, Initializable {
 
     event liquidityReleased(address liquidityPool, uint amountD, uint amountS);
     event withdrewTokens(address dao, uint amount);
-    event refundedTokens(address dao, uint amount);
 
     modifier onlyOracle {
         require(msg.sender == oracle, "Not oracle");
@@ -54,9 +53,6 @@ contract WeirController is IWeirInit, Initializable {
             _releaseLiquidity(stablecoinAmount);
             releasedLiquidity = true;
             emit liquidityReleased(weirData.liquidityPool, weirData.amount, stablecoinAmount);
-        } else {
-            _refundTokens();
-            emit refundedTokens(weirData.dao, weirData.amount);
         }
     }
 
