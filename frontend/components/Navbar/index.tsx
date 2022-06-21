@@ -12,6 +12,10 @@ const navLinks: { text: string; link: string }[] = [
     text: "Weirs",
     link: "/",
   },
+  {
+    text: "Vote",
+    link: "/vote",
+  },
 ];
 
 const Navbar = () => {

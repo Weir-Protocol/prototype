@@ -14,7 +14,7 @@ import * as ILPFactory from "../artifacts/contracts/interfaces/ILPFactory.sol/IL
 import * as ILiquidityPool from "../artifacts/contracts/interfaces/ILiquidityPool.sol/ILiquidityPool.json";
 
 const amount = 10000;
-const ratio = 0.3;
+const ratio = 0.33;
 const routerAddress = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
 const LPFactoryAddress = "0x62d5b84bE28a183aBB507E125B384122D2C25fAE";
 

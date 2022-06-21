@@ -1,9 +1,25 @@
-import { Button, FormLabel, Input, Select } from "@chakra-ui/react";
-import { FormEventHandler, KeyboardEventHandler, useState } from "react";
+import {
+  Button,
+  FormLabel,
+  Input,
+  Select,
+  useToast,
+  Textarea,
+} from "@chakra-ui/react";
+import {
+  FormEventHandler,
+  KeyboardEventHandler,
+  useEffect,
+  useState,
+} from "react";
+import { useRouter } from "next/router";
+import { useCelo } from "@celo/react-celo";
+
 import DefaultLayout from "../layouts/DefaultLayout";
-import {doc} from '@firebase/firestore'
-import {setDoc} from 'firebase/firestore'
-import {firestore} from  '../firebase/firebase'
+
+import { doc } from "@firebase/firestore";
+import { setDoc } from "firebase/firestore";
+import { firestore } from "../firebase/firebase";
 
 const Create = () => {
   const [DAOName, setDAOName] = useState<string>("");
@@ -18,10 +34,29 @@ const Create = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSubmit: FormEventHandler = async(e) => {
+  const router = useRouter();
+  const { address } = useCelo();
+  const toast = useToast();
+
+  useEffect(() => {
+    if (!address) {
+      toast({
+        title: "Connect your wallet",
+        description:
+          "Please connect your wallet before accessing the create page",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      router.push("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
+
+  const handleSubmit: FormEventHandler = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const _dao = doc(firestore,`DAO/${DAOTokenAddress}`)
+    const _dao = doc(firestore, `DAO/${DAOTokenAddress}`);
     const dao_data = {
       DAOName,
       DAOTokenAddress,
@@ -32,14 +67,12 @@ const Create = () => {
       whitelistedText,
       whitelisted,
       stableCoin,
-    }
+    };
     try {
-      await setDoc(_dao,dao_data)
-      console.log("saved to db")
-      
-    }
-    catch(error){
-      console.log("error",error)
+      await setDoc(_dao, dao_data);
+      console.log("added to db");
+    } catch (error) {
+      console.log("error", error);
     }
     setTimeout(() => setLoading(false), 3000);
   };
@@ -79,7 +112,7 @@ const Create = () => {
             type="text"
             value={DAOName}
             onChange={(e) => setDAOName(e.target.value)}
-            placeholder="Enter name of the DAO"
+            placeholder="Enter name of your DAO"
             required
           />
           <FormLabel className="mt-[10px]" htmlFor="daoTokenAddress">
@@ -89,7 +122,7 @@ const Create = () => {
             id="daoTokenAddress"
             type="text"
             value={DAOTokenAddress}
-            placeholder="Enter token address of the DAO"
+            placeholder="Enter address of the DAO token"
             onChange={(e) => setDAOTokenAddress(e.target.value)}
             required
           />
@@ -99,7 +132,7 @@ const Create = () => {
           <Input
             id="daoTokenAmount"
             type="text"
-            placeholder="Enter token amount of the DAO"
+            placeholder="Enter amount of DAO tokens to lock-in"
             value={DAOTokenAmount}
             onChange={(e) => setDAOTokenAmount(e.target.value)}
             required
@@ -110,6 +143,7 @@ const Create = () => {
           <Select
             placeholder="Select the stablecoin"
             onChange={(e) => setStableCoin(e.target.value)}
+            required
           >
             <option value="tUSD">tUSD</option>
           </Select>
@@ -127,9 +161,10 @@ const Create = () => {
           <FormLabel className="mt-[60px]" htmlFor="kpiTarget">
             KPI Target
           </FormLabel>
-          <Input
+          <Textarea
             id="kpiTarget"
-            type="text"
+            rows={5}
+            resize="none"
             value={KPITarget}
             placeholder="Enter KPI target"
             onChange={(e) => setKPITarget(e.target.value)}
