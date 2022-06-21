@@ -1,7 +1,25 @@
-import { Button } from "@chakra-ui/react";
+import { useCelo } from "@celo/react-celo";
+import { Button, useToast } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import DefaultLayout from "../layouts/DefaultLayout";
 
 const Vote = () => {
+  const router = useRouter();
+  const { address } = useCelo();
+  const toast = useToast();
+
+  if (!address) {
+    toast({
+      title: "Connect your wallet",
+      description:
+        "Please connect your wallet before accessing the voting page",
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
+    router.push("/");
+  }
+
   return (
     <DefaultLayout>
       <div className="min-h-[90vh] flex flex-col items-start w-full mx-auto my-[50px]">
