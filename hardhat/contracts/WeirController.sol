@@ -14,6 +14,7 @@ contract WeirController is IWeirInit, Initializable {
     WeirParams public weirData;
 
     event liquidityReleased(address liquidityPool, uint amountD, uint amountS);
+    event withdrewTokens(address dao, uint amount);
     event refundedTokens(address dao, uint amount);
 
     modifier onlyOracle {
@@ -48,7 +49,7 @@ contract WeirController is IWeirInit, Initializable {
     }
 
     function postVoteResult(bool outcome, uint stablecoinAmount) external onlyOracle {
-        require(isDeadlineOver() == true, "Active period");
+        require(isDeadlineOver() == true, "Lock period active");
         if (outcome) {
             _releaseLiquidity(stablecoinAmount);
             releasedLiquidity = true;
@@ -60,8 +61,9 @@ contract WeirController is IWeirInit, Initializable {
     }
 
     function withdrawTokens() external onlyDAO {
-        require(isDeadlineOver() == true, "Active period");
+        require(isDeadlineOver() == true, "Lock period active");
         _refundTokens();
+        emit withdrewTokens(weirData.dao, weirData.amount);
     }
 
     function _releaseLiquidity(uint stablecoinAmount) private {

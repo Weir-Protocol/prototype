@@ -9,15 +9,19 @@ contract CarbonCredit is ERC20, Ownable {
     address public tUSD_Address;
 
     constructor() ERC20("Sample Carbon Credit", "SCC") {
-        _mint(msg.sender, 1000000 * 10 ** decimals());
+        _mint(msg.sender, 100 * 10 ** decimals());
+    }
+
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
     }
 
     function setPriceInTUSD(uint8 price) external onlyOwner {
         PRICE_IN_tUSD = price;
     }
 
-    function setTUSDAddress(address tusdAddress) external onlyOwner {
-        tUSD_Address = tusdAddress;
+    function setTUSDAddress(address _tUSD_Address) external onlyOwner {
+        tUSD_Address = _tUSD_Address;
     }
 
     function withdrawTUSD() external onlyOwner {
@@ -27,12 +31,12 @@ contract CarbonCredit is ERC20, Ownable {
         );
     }
 
-    function purchaseCredits(uint amount) external {
+    function purchaseWithTUSD(uint TUSDamount) external {
         ERC20(tUSD_Address).transferFrom(
             msg.sender,
             address(this),
-            amount * PRICE_IN_tUSD
+            TUSDamount
         );
-        transfer(msg.sender, amount);
+        _mint(msg.sender, TUSDamount / PRICE_IN_tUSD);
     }
 }

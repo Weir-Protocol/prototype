@@ -14,6 +14,7 @@ import * as ILPFactory from "../artifacts/contracts/interfaces/ILPFactory.sol/IL
 import * as ILiquidityPool from "../artifacts/contracts/interfaces/ILiquidityPool.sol/ILiquidityPool.json";
 
 const amount = 10000;
+const ratio = 0.3;
 const routerAddress = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
 const LPFactoryAddress = "0x62d5b84bE28a183aBB507E125B384122D2C25fAE";
 
@@ -55,7 +56,7 @@ describe("Weir Protocol Test", function() {
         
         await stablecoin.connect(treasury).transfer(
             dao.address, 
-            ethers.utils.parseEther((amount / 4).toString())
+            ethers.utils.parseEther((amount * ratio).toString())
         );
         router = new ethers.Contract(routerAddress, IRouter.abi, deployer);
         await daotoken.connect(dao).approve(
@@ -64,15 +65,15 @@ describe("Weir Protocol Test", function() {
         );
         await stablecoin.connect(dao).approve(
             router.address,
-            ethers.utils.parseEther((amount / 4).toString())
+            ethers.utils.parseEther((amount * ratio).toString())
         );
         await router.connect(dao).addLiquidity(
             daotoken.address,
             stablecoin.address,
             ethers.utils.parseEther(amount.toString()),
-            ethers.utils.parseEther((amount / 4).toString()),
+            ethers.utils.parseEther((amount * ratio).toString()),
             ethers.utils.parseEther(amount.toString()),
-            ethers.utils.parseEther((amount / 4).toString()),
+            ethers.utils.parseEther((amount * ratio).toString()),
             dao.address,
             Math.ceil((new Date).valueOf()/1000)+300
         );
@@ -80,7 +81,10 @@ describe("Weir Protocol Test", function() {
         const lpFactory = new ethers.Contract(LPFactoryAddress, ILPFactory.abi, deployer);
         lpAddress = await lpFactory.getPair(daotoken.address, stablecoin.address);
 
-        await daotoken.connect(dao).approve(weirFactory.address, ethers.utils.parseEther((amount * 1.5).toString()));
+        await daotoken.connect(dao).approve(
+            weirFactory.address, 
+            ethers.utils.parseEther((amount * 1.5).toString())
+        );
         const weirParams = {
             dao: dao.address,
             daotoken: daotoken.address,
@@ -104,7 +108,15 @@ describe("Weir Protocol Test", function() {
     });
 
     it('factory can create a new weir', async () => {
-        expect(await weirFactory.getWeirOfToken(daotoken.address)).to.not.be.equal(ethers.constants.AddressZero);
+        expect(
+            await weirFactory.getWeirOfToken(daotoken.address)
+        ).to.not.be.equal(ethers.constants.AddressZero);
+    });
+
+    it('treasury receives bonus DAO tokens', async () => {
+        expect(
+            ethers.utils.formatEther(await stablecoin.balanceOf(treasury.address))
+        ).to.not.be.equal((amount / 2).toString());
     });
 
     it("weir params can be retrieved", async () => {
@@ -149,6 +161,6 @@ describe("Weir Protocol Test", function() {
         expect(
             parseFloat(ethers.utils.formatEther(finalReserve.reserve1)) - 
             parseFloat(ethers.utils.formatEther(initialReserve.reserve1))
-        ).to.be.equal(amount / 4);
+        ).to.be.equal(amount * ratio);
     });
 });

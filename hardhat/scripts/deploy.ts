@@ -4,14 +4,18 @@
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
 import { ethers } from "hardhat";
+import { Contract } from "ethers";
+import fs from 'fs';
 
 const router = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
 const oracle = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
-const DAO_Address = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
 
 async function main() {
   const [deployer] = await ethers.getSigners();
+  const DAO_Address = deployer.address;
+  
   console.log("Deployer address::", deployer.address);
+  console.log("DAO address::", DAO_Address);
 
   const DAOtoken = await ethers.getContractFactory("DAOtoken");
   const daotoken = await DAOtoken.deploy();
@@ -36,7 +40,10 @@ async function main() {
   await weirTreasury.deployed();
   console.log("Deployed WeirTreasury::", weirTreasury.address);
 
-  await daotoken.transfer(DAO_Address, ethers.utils.parseEther("1000000"));
+  await weirTreasury.setTUSDAddress(stablecoin.address);
+  await weirTreasury.setCarbonCreditAddress(carbonCredit.address);
+
+  await daotoken.transfer(DAO_Address, ethers.utils.parseEther("100000"));
   await stablecoin.transfer(weirTreasury.address, ethers.utils.parseEther("1000000"));
   await weirTreasury.approveTokenSpender(
     stablecoin.address,
@@ -48,11 +55,41 @@ async function main() {
   const weirFactory = await WeirFactory.deploy(weirTreasury.address, oracle, router);
   await weirFactory.deployed();
   console.log("Deployed WeirFactory::", weirFactory.address);
+
+  type ReturnType = {
+    [name: string]: Contract;
+  }
+
+  return  {
+    "WeirFactory": weirFactory,
+    "WeirTreasury": weirTreasury,
+    "DAOtoken": daotoken,
+    "Stablecoin": stablecoin,
+    "CarbonCredit": carbonCredit
+  } as ReturnType;
+}
+
+function saveFrontendFiles(contract: Contract, contractName: string, filePath: string) {
+  fs.appendFileSync(
+    filePath,
+    `export const ${contractName}Address = '${contract.address}';\n`
+  );
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
-main().catch((error) => {
+main()
+.then(async (deployedData) => {
+  const filePath = "./contractAddress.ts";
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+  Object.keys(deployedData).forEach(function(key:string) {
+    saveFrontendFiles(deployedData[key] as Contract, key, filePath);
+  });
+  process.exit(0);
+})
+.catch((error) => {
   console.error(error);
-  process.exitCode = 1;
+  process.exit(1);
 });
