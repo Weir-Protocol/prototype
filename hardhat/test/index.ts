@@ -107,9 +107,12 @@ describe("Weir Protocol Test", function() {
         expect(weirFactory.address).to.not.be.undefined;
     });
 
-    it('factory can create a new weir', async () => {
+    it('DAO can create a new weir using factory', async () => {
         expect(
             await weirFactory.getWeirOfToken(daotoken.address)
+        ).to.not.be.equal(ethers.constants.AddressZero);
+        expect(
+            await weirFactory.getTokenOfDAO(dao.address)
         ).to.not.be.equal(ethers.constants.AddressZero);
     });
 
