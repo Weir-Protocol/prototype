@@ -35,7 +35,7 @@ const Create = () => {
     }
     try {
       await setDoc(_dao,dao_data)
-      console.log("added to db")
+      console.log("saved to db")
       
     }
     catch(error){
