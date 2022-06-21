@@ -1,4 +1,11 @@
-import { Button, FormLabel, Input, Select, useToast } from "@chakra-ui/react";
+import {
+  Button,
+  FormLabel,
+  Input,
+  Select,
+  useToast,
+  Textarea,
+} from "@chakra-ui/react";
 import {
   FormEventHandler,
   KeyboardEventHandler,
@@ -153,9 +160,10 @@ const Create = () => {
           <FormLabel className="mt-[60px]" htmlFor="kpiTarget">
             KPI Target
           </FormLabel>
-          <Input
+          <Textarea
             id="kpiTarget"
-            type="text"
+            rows={5}
+            resize="none"
             value={KPITarget}
             placeholder="Enter KPI target"
             onChange={(e) => setKPITarget(e.target.value)}
