@@ -18,13 +18,13 @@ function MyApp({ Component, pageProps }: AppProps) {
         networks={[Alfajores]}
         network={{
           name: NetworkNames.Alfajores,
-          rpcUrl: 'https://alfajores-forno.celo-testnet.org',
-          graphQl: 'https://alfajores-blockscout.celo-testnet.org/graphiql',
-          explorer: 'https://alfajores-blockscout.celo-testnet.org',
+          rpcUrl: "https://alfajores-forno.celo-testnet.org",
+          graphQl: "https://alfajores-blockscout.celo-testnet.org/graphiql",
+          explorer: "https://alfajores-blockscout.celo-testnet.org",
           chainId: 44787,
         }}
       >
-        <Component {...pageProps} />;
+        <Component {...pageProps} />
       </CeloProvider>
     </ChakraProvider>
   );
