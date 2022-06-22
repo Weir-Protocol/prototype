@@ -82,6 +82,11 @@
       {
         "components": [
           {
+            "internalType": "bool",
+            "name": "releasedLiquidity",
+            "type": "bool"
+          },
+          {
             "internalType": "address",
             "name": "dao",
             "type": "address"

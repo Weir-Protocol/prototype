@@ -3,6 +3,7 @@ pragma solidity ^0.8.4;
 
 interface IWeirInit {
     struct WeirParams {
+        bool releasedLiquidity;
         address dao;
         address daotoken;
         address stablecoin;

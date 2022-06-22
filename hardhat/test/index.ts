@@ -86,6 +86,7 @@ describe("Weir Protocol Test", function() {
             ethers.utils.parseEther((amount * 1.5).toString())
         );
         const weirParams = {
+            releasedLiquidity: false,
             dao: dao.address,
             daotoken: daotoken.address,
             stablecoin: stablecoin.address,
@@ -124,7 +125,7 @@ describe("Weir Protocol Test", function() {
 
     it("weir params can be retrieved", async () => {
         const weirParams = await weirController.weirData();
-        const releasedLiquidity = await weirController.releasedLiquidity();
+        const releasedLiquidity = weirParams.releasedLiquidity;
         expect(releasedLiquidity).to.be.equal(false);
         expect(weirParams.dao).to.be.equal(dao.address);
         expect(weirParams.daotoken).to.be.equal(daotoken.address);
