@@ -52,9 +52,14 @@ const config: HardhatUserConfig = {
     }
   },
   abiExporter: {
-    path: './abi',
+    path: '../frontend/abi',
     runOnCompile: true,
     clear: true,
+    only: [
+      "WeirFactory",
+      "WeirController",
+      "IRouter"
+    ],
     spacing: 2
   },
   gasReporter: {

@@ -10,8 +10,8 @@ const navLinks: { text: string; link: string }[] = [
   },
   {
     text: "Weirs",
-    link: "/",
-  },
+    link: "/weirs",
+  }
 ];
 
 const Navbar = () => {
