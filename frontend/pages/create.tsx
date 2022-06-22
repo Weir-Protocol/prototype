@@ -3,7 +3,8 @@ import { FormEventHandler, KeyboardEventHandler, useState } from "react";
 import DefaultLayout from "../layouts/DefaultLayout";
 import {doc} from '@firebase/firestore'
 import {setDoc} from 'firebase/firestore'
-import {firestore} from  '../firebase/firebase'
+import {firestore,firebase} from  '../firebase/firebase'
+ import { Timestamp } from 'firebase/firestore'
 
 const Create = () => {
   const [DAOName, setDAOName] = useState<string>("");
@@ -22,6 +23,7 @@ const Create = () => {
     setLoading(true);
     e.preventDefault();
     const _dao = doc(firestore,`DAO/${DAOTokenAddress}`)
+    const time = Timestamp.now()
     const dao_data = {
       DAOName,
       DAOTokenAddress,
@@ -32,6 +34,7 @@ const Create = () => {
       whitelistedText,
       whitelisted,
       stableCoin,
+      time
     }
     try {
       await setDoc(_dao,dao_data)
