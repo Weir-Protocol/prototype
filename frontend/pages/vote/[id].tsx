@@ -119,12 +119,12 @@ const Vote = () => {
                     Information
                   </h3>
                   <div className="flex flex-col mb-[10px]">
-                    <div className="flex flex-col mb-[10px]">
-                      <h4 className="font-bold text-gray-300">KPI target</h4>
-                      <p className="text-white font-semibold text-sm">
-                        {data?.KPITarget}
-                      </p>
-                    </div>
+                    <h4 className="font-bold text-gray-300">KPI target</h4>
+                    <p className="text-white font-semibold text-xl">
+                      {data?.KPITarget}
+                    </p>
+                  </div>
+                  <div className="flex flex-col mt-[30px] mb-[10px]">
                     <h4 className="font-bold text-gray-300">Voting System</h4>
                     <p className="text-white font-semibold text-sm">
                       Single choice voting
