@@ -142,7 +142,7 @@ const Vote = () => {
                     </p>
                   </div>
                   <div className="flex flex-col mb-[10px]">
-                    <h4 className="font-bold text-gray-300">Voting System</h4>
+                    <h4 className="font-bold text-gray-300">End date</h4>
                     <p
                       className="text-white font-semibold text-sm"
                       suppressHydrationWarning
