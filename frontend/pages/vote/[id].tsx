@@ -2,7 +2,7 @@ import { useCelo } from "@celo/react-celo";
 import { Button, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import DefaultLayout from "../layouts/DefaultLayout";
+import DefaultLayout from "../../layouts/DefaultLayout";
 
 const Vote = () => {
   const router = useRouter();
