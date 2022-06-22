@@ -178,22 +178,24 @@ const Vote = () => {
                   </div>
                 )}
               {(new Date(data?.deadlineOfVote)?.getTime() ?? 0) <
-                new Date().getTime() && (
-                <div className="flex-1 flex flex-col items-start justify-start">
-                  <h3 className="text-lg font-bold mt-[30px] mb-[15px]">
-                    Vote
-                  </h3>
-                  <div className="flex flex-col items-center md:max-w-[250px] w-full">
-                    <Button
-                      colorScheme="orange"
-                      className="w-full"
-                      // onClick={}
-                    >
-                      Commit Vote Result
-                    </Button>
+                new Date().getTime() &&
+                data?.DAOTokenAddress?.toLowerCase() ===
+                  address?.toLowerCase() && (
+                  <div className="flex-1 flex flex-col items-start justify-start">
+                    <h3 className="text-lg font-bold mt-[30px] mb-[15px]">
+                      Vote
+                    </h3>
+                    <div className="flex flex-col items-center md:max-w-[250px] w-full">
+                      <Button
+                        colorScheme="orange"
+                        className="w-full"
+                        // onClick={}
+                      >
+                        Commit Vote Result
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </>
         )}
