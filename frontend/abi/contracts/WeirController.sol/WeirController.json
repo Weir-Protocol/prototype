@@ -66,6 +66,11 @@
       {
         "components": [
           {
+            "internalType": "bool",
+            "name": "releasedLiquidity",
+            "type": "bool"
+          },
+          {
             "internalType": "address",
             "name": "dao",
             "type": "address"
@@ -154,21 +159,13 @@
   },
   {
     "inputs": [],
-    "name": "releasedLiquidity",
+    "name": "weirData",
     "outputs": [
       {
         "internalType": "bool",
-        "name": "",
+        "name": "releasedLiquidity",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "weirData",
-    "outputs": [
+      },
       {
         "internalType": "address",
         "name": "dao",

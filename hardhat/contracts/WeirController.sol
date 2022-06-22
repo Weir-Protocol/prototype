@@ -10,7 +10,6 @@ contract WeirController is IWeirInit, Initializable {
     address oracle;
     address router;
 
-    bool public releasedLiquidity;
     WeirParams public weirData;
 
     event liquidityReleased(address liquidityPool, uint amountD, uint amountS);
@@ -51,7 +50,7 @@ contract WeirController is IWeirInit, Initializable {
         require(isDeadlineOver() == true, "Lock period active");
         if (outcome) {
             _releaseLiquidity(stablecoinAmount);
-            releasedLiquidity = true;
+            weirData.releasedLiquidity = true;
             emit liquidityReleased(weirData.liquidityPool, weirData.amount, stablecoinAmount);
         }
     }

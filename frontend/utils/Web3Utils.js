@@ -10,6 +10,7 @@ import {
 
 import ERC20 from "../abi/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json";
 import IRouter from "../abi/contracts/interfaces/IRouter.sol/IRouter.json";
+import ILiquidityPool from "../abi/contracts/interfaces/ILiquidityPool.sol/ILiquidityPool.json";
 import WeirFactory from "../abi/contracts/WeirFactory.sol/WeirFactory.json";
 import WeirController from "../abi/contracts/WeirController.sol/WeirController.json";
 
@@ -68,6 +69,43 @@ export const Web3Utils = ({ children }) => {
         }
     };
 
+    const fetchTokenPrice = async (lpAddress) => {
+        try {
+            const lpPool = new Contract(lpAddress, ILiquidityPool, provider);
+
+            const currentReserve = await lpPool.getReserves(); 
+            const price = 
+                parseFloat(ethers.utils.formatEther(currentReserve.reserve0))
+                 / 
+                parseFloat(ethers.utils.formatEther(currentReserve.reserve1));
+            return price;           
+        } catch(error) {
+            console.log('Error:', error);
+        }
+    };
+
+    const postVoteResult = async (result, daoTokenAddress, lpAddress, amount) => {
+        try {
+            const oracle = new ethers.Wallet(process.env.PRIVATE_KEY);
+
+            const weirAddress = await weirFactory.getWeirOfToken(daoTokenAddress);
+            const weirController = new Contract(weirAddress, WeirController, provider);
+            const lpPool = new Contract(lpAddress, ILiquidityPool, provider);
+
+            const currentReserve = await lpPool.getReserves();
+            const stablecoinQuote = amount *
+                (parseFloat(ethers.utils.formatEther(currentReserve.reserve0))
+                 / 
+                parseFloat(ethers.utils.formatEther(currentReserve.reserve1)));
+            const tx = await weirController
+                        .connect(oracle)
+                        .postVoteResult(result, ethers.utils.parseEther(stablecoinQuote));
+            await tx.wait();
+        } catch(error) {
+            console.log('Error:', error);
+        }
+    };
+
     const display = async (Web3Provider) => {
         await loadWeb3Data(Web3Provider);
         weirFactory = new Contract(WeirFactoryAddress, WeirFactory, provider);
@@ -81,6 +119,8 @@ export const Web3Utils = ({ children }) => {
         createWeir,
         fetchWeirOfDAO,
         fetchWeirData,
+        fetchTokenPrice,
+        postVoteResult,
         display
     }),
     [
