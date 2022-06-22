@@ -18,7 +18,7 @@ import { useCelo } from "@celo/react-celo";
 import DefaultLayout from "../layouts/DefaultLayout";
 import {doc} from '@firebase/firestore'
 import {setDoc} from 'firebase/firestore'
-import {firestore,firebase} from  '../firebase/firebase'
+import {firestore} from  '../firebase/firebase'
 import { Timestamp } from 'firebase/firestore'
 
 const Create = () => {
@@ -56,7 +56,7 @@ const Create = () => {
   const handleSubmit: FormEventHandler = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const _dao = doc(firestore,`DAO/${DAOTokenAddress}`)
+    const _dao = doc(firestore,"DAO",DAOTokenAddress)
     const time = Timestamp.now()
     const dao_data = {
       DAOName,
@@ -68,7 +68,9 @@ const Create = () => {
       whitelistedText,
       whitelisted,
       stableCoin,
-      time
+      time,
+      yes:0,
+      no:0
     }
     try {
       await setDoc(_dao, dao_data);
