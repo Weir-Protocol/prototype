@@ -58,7 +58,8 @@ const config: HardhatUserConfig = {
     only: [
       "WeirFactory",
       "WeirController",
-      "IRouter"
+      "IRouter",
+      "ERC20"
     ],
     spacing: 2
   },

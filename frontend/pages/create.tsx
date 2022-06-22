@@ -14,12 +14,19 @@ import {
 } from "react";
 import { useRouter } from "next/router";
 import { useCelo } from "@celo/react-celo";
+import useWeb3Utils from "../utils/Web3Utils";
 
 import DefaultLayout from "../layouts/DefaultLayout";
-import {doc} from '@firebase/firestore'
-import {setDoc} from 'firebase/firestore'
-import {firestore} from  '../firebase/firebase'
-import { Timestamp } from 'firebase/firestore'
+import {doc} from '@firebase/firestore';
+import {setDoc} from 'firebase/firestore';
+import {firestore} from  '../firebase/firebase';
+import { Timestamp } from 'firebase/firestore';
+
+import { ethers } from "ethers";
+
+import {
+  StablecoinAddress
+} from "../../hardhat/contractAddress";
 
 const Create = () => {
   const [DAOName, setDAOName] = useState<string>("");
@@ -35,21 +42,32 @@ const Create = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
-  const { address } = useCelo();
+  const { address, kit } = useCelo();
   const toast = useToast();
 
+  const {
+    loadWeb3Data,
+    createWeir,
+    fetchWeirOfDAO,
+    display
+  } = useWeb3Utils();
+
   useEffect(() => {
-    if (!address) {
-      toast({
-        title: "Connect your wallet",
-        description:
-          "Please connect your wallet before accessing the create page",
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-      });
-      router.push("/");
+    async function load() {
+      if (!address) {
+        toast({
+          title: "Connect your wallet",
+          description:
+            "Please connect your wallet before accessing the create page",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+        router.push("/");
+      }
+      await loadWeb3Data(kit.connection.web3.currentProvider);
     }
+    load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
@@ -72,7 +90,24 @@ const Create = () => {
       yes:0,
       no:0
     }
+
+    const userAddress = address;
+    const amount = ethers.utils.parseEther(DAOTokenAmount);
+    const deadline = (new Date(deadlineOfVote.valueOf())).valueOf()/1000;
+    const dName = DAOName;
+  
+    const weirParams = {
+      dao: userAddress,
+      daotoken: DAOTokenAddress,
+      stablecoin: StablecoinAddress,
+      liquidityPool: liquidityPoolAddress,
+      amount: amount,
+      deadline: deadline,
+      daoName: dName
+    };
+
     try {
+      await createWeir(weirParams, DAOTokenAmount);
       await setDoc(_dao, dao_data);
       console.log("added to db");
     } catch (error) {
