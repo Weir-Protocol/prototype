@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@celo-tools/celo-ethers-wrapper": "^0.3.0",
     "@celo/contractkit": "^2.0.0",
     "@celo/react-celo": "^4.0.0",
     "@chakra-ui/react": "^2.2.1",

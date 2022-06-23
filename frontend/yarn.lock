@@ -65,6 +65,11 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
+"@celo-tools/celo-ethers-wrapper@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@celo-tools/celo-ethers-wrapper/-/celo-ethers-wrapper-0.3.0.tgz#14e19edde1c71da912927344590029e9ffcb3a97"
+  integrity sha512-qJgVQ3EeVYzM0uvGcVxPB4cH8BaEnoLMyG8k/gAWzSCjJFIgNTlRs05IFGzAb7U0GlbDKCDSualHSGMXq+OHEw==
+
 "@celo/base@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@celo/base/-/base-2.0.0.tgz#2cf054759ac37faea2a7e8bed7868e45adce24a5"

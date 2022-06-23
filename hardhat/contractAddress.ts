@@ -1,5 +1,5 @@
-export const WeirFactoryAddress = '0x06Be17635d4633abD815f7b057Ee14a806F7F930';
-export const WeirTreasuryAddress = '0x9fB4b74711ce1c6A55b0a4FfE393772E82a1e7F8';
-export const DAOtokenAddress = '0x2cf743337c8F138184D2713cdF3a9FDBfbf00B1B';
-export const StablecoinAddress = '0x4c9Fb7BFB61F46D5434BB115D3176565949c66e3';
-export const CarbonCreditAddress = '0x2c56f33Ca05C41072B441aCeFC8959Db59791106';
+export const WeirFactoryAddress = '0xeEf374f522853E9799e2D61E96320E714486E419';
+export const WeirTreasuryAddress = '0xf8E99a96Dc86657c05d020Ff7104DE4E74f87A33';
+export const DAOtokenAddress = '0x7CE1e4277631D59A63F42Aad0470D5b5e01a212A';
+export const StablecoinAddress = '0xF6443397b079cfb4eB624b85Ef2e110Feb48e1D4';
+export const CarbonCreditAddress = '0x6d9D22A3F8a80c97bbf5d7e959d13BD45872d66f';

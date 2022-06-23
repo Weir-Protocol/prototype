@@ -13,8 +13,8 @@ import {
     StablecoinAddress
 } from "../contractAddress";
 
-const address = "0x815d3C5253E6D0b5e0D8a0267e1D120ad966EB19";
-const amount = "100";
+const address = "0x44d5C471358664A24Af4CDd7f9e00504e46ad98A";
+const amount = "1000";
 
 const token: number = 1;    
 

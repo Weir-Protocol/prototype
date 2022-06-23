@@ -1,5 +1,6 @@
 import { useCelo } from "@celo/react-celo";
 import { ethers, providers, Contract } from "ethers";
+import { CeloProvider } from "@celo-tools/celo-ethers-wrapper";
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 import {
@@ -25,10 +26,19 @@ export const Web3Utils = ({ children }) => {
 
     const loadWeb3Data = async (Web3Provider) => {
         try {
-            provider = new providers.Web3Provider(Web3Provider);
-            signer = provider.getSigner();
+            const walletProvider = new providers.Web3Provider(Web3Provider);
+            const chainID = (await walletProvider.getNetwork()).chainId;
+            setChainId(chainID);
+            if (chainID == 44787) {
+                provider = new CeloProvider("https://alfajores-forno.celo-testnet.org");
+            } else {
+                provider = new CeloProvider("http://localhost:8545");
+            }
+            // provider = new providers.Web3Provider(Web3Provider);
+            await provider.ready;
+            signer = walletProvider.getSigner();
+            // signer = provider.getSigner();
             weirFactory = new Contract(WeirFactoryAddress, WeirFactory, provider);
-            setChainId(await signer.getChainId());
         } catch(error) {
             console.log('Error:', error);
         }
