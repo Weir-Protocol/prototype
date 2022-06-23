@@ -17,11 +17,10 @@ import { useCelo } from "@celo/react-celo";
 import useWeb3Utils from "../utils/Web3Utils";
 
 import DefaultLayout from "../layouts/DefaultLayout";
-import {doc} from '@firebase/firestore';
-import {setDoc} from 'firebase/firestore';
-import {firestore} from  '../firebase/firebase';
+import { doc } from '@firebase/firestore';
+import { setDoc } from 'firebase/firestore';
+import { firestore } from '../firebase/firebase';
 import { Timestamp } from 'firebase/firestore';
-
 import { ethers } from "ethers";
 
 import {
@@ -72,48 +71,59 @@ const Create = () => {
   }, [address]);
 
   const handleSubmit: FormEventHandler = async (e) => {
-    setLoading(true);
     e.preventDefault();
-    const _dao = doc(firestore,"DAO",DAOTokenAddress)
-    const time = Timestamp.now()
-    const dao_data = {
-      DAOName,
-      DAOTokenAddress,
-      DAOTokenAmount,
-      liquidityPoolAddress,
-      KPITarget,
-      deadlineOfVote,
-      whitelistedText,
-      whitelisted,
-      stableCoin,
-      time,
-      yes:0,
-      no:0
+    const check_address = ethers.utils.isAddress
+    if (!check_address(DAOTokenAddress)){
+      alert("invalid DAO Token Address")
     }
-
-    const userAddress = address;
-    const amount = ethers.utils.parseEther(DAOTokenAmount);
-    const deadline = (new Date(deadlineOfVote.valueOf())).valueOf()/1000;
-    const dName = DAOName;
-  
-    const weirParams = {
-      dao: userAddress,
-      daotoken: DAOTokenAddress,
-      stablecoin: StablecoinAddress,
-      liquidityPool: liquidityPoolAddress,
-      amount: amount,
-      deadline: deadline,
-      daoName: dName
-    };
-
-    try {
-      await createWeir(weirParams, DAOTokenAmount);
-      await setDoc(_dao, dao_data);
-      console.log("added to db");
-    } catch (error) {
-      console.log("error", error);
+    if (!check_address(liquidityPoolAddress)){
+      alert("invalid Liquidity Pool Address")
     }
-    setTimeout(() => setLoading(false), 3000);
+    if (check_address(DAOTokenAddress) && check_address(liquidityPoolAddress)) {
+      setLoading(true);
+      const _dao = doc(firestore, "DAO", DAOTokenAddress)
+      const time = Timestamp.now()
+      const dao_data = {
+        DAOName,
+        DAOTokenAddress,
+        DAOTokenAmount,
+        liquidityPoolAddress,
+        KPITarget,
+        deadlineOfVote,
+        whitelistedText,
+        whitelisted,
+        stableCoin,
+        time,
+        yes: 0,
+        no: 0
+      }
+
+      const userAddress = address;
+      const amount = ethers.utils.parseEther(DAOTokenAmount);
+      const deadline = (new Date(deadlineOfVote.valueOf())).valueOf() / 1000;
+      const dName = DAOName;
+
+      const weirParams = {
+        dao: userAddress,
+        daotoken: DAOTokenAddress,
+        stablecoin: StablecoinAddress,
+        liquidityPool: liquidityPoolAddress,
+        amount: amount,
+        deadline: deadline,
+        daoName: dName
+      };
+
+      try {
+        await createWeir(weirParams, DAOTokenAmount);
+        await setDoc(_dao, dao_data);
+        console.log("added to db");
+      } catch (error) {
+        console.log("error", error);
+      }
+      setTimeout(() => setLoading(false), 3000);
+    }
+    
+
   };
 
   const handleWhitelistAddition: KeyboardEventHandler = (e) => {
