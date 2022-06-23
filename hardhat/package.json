@@ -6,6 +6,7 @@
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile",
     "deploy": "npx hardhat run ./scripts/deploy.ts --network alfajores",
+    "deploy-local": "npx hardhat run ./scripts/deploy.ts --network localhost",
     "test": "npx hardhat test --network localhost"
   },
   "license": "MIT",
