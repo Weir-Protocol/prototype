@@ -86,9 +86,9 @@ export const Web3Utils = ({ children }) => {
 
             const currentReserve = await lpPool.getReserves(); 
             const price = 
-                parseFloat(ethers.utils.formatEther(currentReserve.reserve0))
+                parseFloat(ethers.utils.formatEther(currentReserve.reserve1))
                  / 
-                parseFloat(ethers.utils.formatEther(currentReserve.reserve1));
+                parseFloat(ethers.utils.formatEther(currentReserve.reserve0));
             return price;           
         } catch(error) {
             console.log('Error:', error);
@@ -105,9 +105,9 @@ export const Web3Utils = ({ children }) => {
 
             const currentReserve = await lpPool.getReserves();
             const stablecoinQuote = amount *
-                (parseFloat(ethers.utils.formatEther(currentReserve.reserve0))
+                (parseFloat(ethers.utils.formatEther(currentReserve.reserve1))
                  / 
-                parseFloat(ethers.utils.formatEther(currentReserve.reserve1)));
+                parseFloat(ethers.utils.formatEther(currentReserve.reserve0)));
             if (result == true) {
                 const stablecoin = new Contract(StablecoinAddress, ERC20, provider);
                 const tx1 = await stablecoin

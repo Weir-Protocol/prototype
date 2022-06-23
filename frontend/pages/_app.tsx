@@ -1,4 +1,4 @@
-import { CeloProvider, Alfajores, Localhost } from "@celo/react-celo";
+import { CeloProvider, Alfajores, NetworkNames } from "@celo/react-celo";
 import { ChakraProvider } from "@chakra-ui/react";
 import type { AppProps } from "next/app";
 import { Web3Utils } from "../utils/Web3Utils";
@@ -16,14 +16,14 @@ function MyApp({ Component, pageProps }: AppProps) {
           url: "http://localhost:3000/",
           icon: "",
         }}
-        networks={[Localhost, Alfajores]}
-        // network={{
-        //   name: NetworkNames.Alfajores,
-        //   rpcUrl: "https://alfajores-forno.celo-testnet.org",
-        //   graphQl: "https://alfajores-blockscout.celo-testnet.org/graphiql",
-        //   explorer: "https://alfajores-blockscout.celo-testnet.org",
-        //   chainId: 44787,
-        // }}
+        networks={[Alfajores]}
+        network={{
+          name: NetworkNames.Alfajores,
+          rpcUrl: "https://alfajores-forno.celo-testnet.org",
+          graphQl: "https://alfajores-blockscout.celo-testnet.org/graphiql",
+          explorer: "https://alfajores-blockscout.celo-testnet.org",
+          chainId: 44787,
+        }}
       >
         <Web3Utils>
           <Component {...pageProps} />

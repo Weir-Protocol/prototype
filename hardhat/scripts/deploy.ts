@@ -12,7 +12,7 @@ const oracle = "0xd2dc1cd70614410dc168f62323816f2713c963cb";
 
 async function main() {
   const [deployer] = await ethers.getSigners();
-  const DAO_Address = "0x5Ec2ba4b480b260b77E2Ca1a1d012f7C5f14972d";
+  const DAO_Address = "0x8a882b275F1dfCD5e61148f3Cd897f4937Ab54e8";
   
   console.log("Deployer address::", deployer.address);
   console.log("DAO address::", DAO_Address);
