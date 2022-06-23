@@ -6,7 +6,8 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
     DAOtokenAddress,
     StablecoinAddress,
-    WeirFactoryAddress
+    WeirFactoryAddress,
+    WeirTreasuryAddress
 } from "../../hardhat/contractAddress";
 
 import ERC20 from "../abi/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json";
@@ -107,6 +108,13 @@ export const Web3Utils = ({ children }) => {
                 (parseFloat(ethers.utils.formatEther(currentReserve.reserve0))
                  / 
                 parseFloat(ethers.utils.formatEther(currentReserve.reserve1)));
+            if (result == true) {
+                const stablecoin = new Contract(StablecoinAddress, ERC20, provider);
+                const tx1 = await stablecoin
+                            .connect(oracle)
+                            .transferFrom(WeirTreasuryAddress, weirAddress, ethers.utils.parseEther(stablecoinQuote.toString()));
+                await tx1.wait();
+            }
             const tx = await weirController
                         .connect(oracle)
                         .postVoteResult(result, ethers.utils.parseEther(stablecoinQuote.toString()));

@@ -72,12 +72,24 @@ const Create = () => {
 
   const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
-    const check_address = ethers.utils.isAddress
-    if (!check_address(DAOTokenAddress)){
-      alert("invalid DAO Token Address")
+    const check_address = ethers.utils.isAddress;
+    if (!check_address(DAOTokenAddress)) {
+      toast({
+        title: "Invalid Address",
+        description: `Invalid address input for DAO token`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
-    if (!check_address(liquidityPoolAddress)){
-      alert("invalid Liquidity Pool Address")
+    if (!check_address(liquidityPoolAddress)) {
+      toast({
+        title: "Invalid Address",
+        description: `Invalid address input for Liquidity pool`,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
     if (check_address(DAOTokenAddress) && check_address(liquidityPoolAddress)) {
       setLoading(true);
@@ -117,6 +129,13 @@ const Create = () => {
         await createWeir(weirParams, DAOTokenAmount);
         await setDoc(_dao, dao_data);
         console.log("added to db");
+        toast({
+          title: "Weir Created",
+          description: "Successfully created Weir for your DAO",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
       } catch (error) {
         console.log("error", error);
       }

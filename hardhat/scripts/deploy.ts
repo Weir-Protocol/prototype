@@ -8,7 +8,7 @@ import { Contract } from "ethers";
 import fs from 'fs';
 
 const router = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
-const oracle = "0xE3D8bd6Aed4F159bc8000a9cD47CffDb95F96121";
+const oracle = "0xd2dc1cd70614410dc168f62323816f2713c963cb";
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -43,7 +43,7 @@ async function main() {
   await weirTreasury.setTUSDAddress(stablecoin.address);
   await weirTreasury.setCarbonCreditAddress(carbonCredit.address);
 
-  await daotoken.transfer(DAO_Address, ethers.utils.parseEther("100000"));
+  await daotoken.transfer(DAO_Address, ethers.utils.parseEther("1000000"));
   await stablecoin.transfer(weirTreasury.address, ethers.utils.parseEther("1000000"));
   await weirTreasury.approveTokenSpender(
     stablecoin.address,
