@@ -207,7 +207,7 @@ const Vote = () => {
                 )}
               {(new Date(data?.deadlineOfVote)?.getTime() ?? 0) <
                 new Date().getTime() &&
-                data?.DAOTokenAddress?.toLowerCase() ===
+                data?.DAOAddress?.toLowerCase() ===
                   address?.toLowerCase() && (
                   <div className="flex-1 flex flex-col items-start justify-start">
                     <h3 className="text-lg font-bold mt-[30px] mb-[15px]">

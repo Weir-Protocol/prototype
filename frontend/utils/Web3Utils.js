@@ -48,7 +48,7 @@ export const Web3Utils = ({ children }) => {
     const createWeir =  async (weirParams, DAOTokenAmount) => {
         try {
             const daoToken = new Contract(DAOtokenAddress, ERC20, provider);
-            const tx1 = await daoToken.connect(signer).approve(WeirFactoryAddress, ethers.utils.parseEther((DAOTokenAmount * 1.5).toString()));
+            const tx1 = await daoToken.connect(signer).approve(WeirFactoryAddress, ethers.utils.parseEther((DAOTokenAmount * 2).toString()));
             await tx1.wait();
             const tx2 = await weirFactory.connect(signer).createWeir(weirParams);
             await tx2.wait();

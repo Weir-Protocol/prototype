@@ -95,8 +95,10 @@ const Create = () => {
       setLoading(true);
       const _dao = doc(firestore, "DAO", DAOTokenAddress)
       const time = Timestamp.now()
+      const DAOAddress = address;
       const dao_data = {
         DAOName,
+        DAOAddress,
         DAOTokenAddress,
         DAOTokenAmount,
         liquidityPoolAddress,
