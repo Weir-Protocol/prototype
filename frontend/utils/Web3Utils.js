@@ -99,7 +99,7 @@ export const Web3Utils = ({ children }) => {
                 parseFloat(ethers.utils.formatEther(currentReserve.reserve1)));
             const tx = await weirController
                         .connect(oracle)
-                        .postVoteResult(result, ethers.utils.parseEther(stablecoinQuote));
+                        .postVoteResult(result, ethers.utils.parseEther(stablecoinQuote.toString()));
             await tx.wait();
         } catch(error) {
             console.log('Error:', error);
