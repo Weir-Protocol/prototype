@@ -13,12 +13,18 @@ import { useEffect, useState } from "react";
 import DefaultLayout from "../../layouts/DefaultLayout";
 import { firestore } from "../../firebase/firebase";
 
+import useWeb3Utils from "../../utils/Web3Utils";
+
 const Vote = () => {
   const router = useRouter();
   const [data, setData] = useState<DocumentData>({});
   const [isWhitelisted, setIsWhitelisted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const { address } = useCelo();
+  const { address, kit } = useCelo();
+  const {
+    loadWeb3Data,
+    postVoteResult
+  } = useWeb3Utils();
   const toast = useToast();
   const url = router.query.id;
 
@@ -40,6 +46,27 @@ const Vote = () => {
       no: increment(1),
     });
     // retrieve todos
+  };
+
+  const postResult = async () => {
+    try {
+      const result = data?.yes > data?.no ? true : false;
+      await postVoteResult(
+        result,
+        data?.DAOTokenAddress,
+        data?.liquidityPoolAddress,
+        parseFloat(data?.DAOTokenAmount)
+      );
+      toast({
+        title: "Votes Commited",
+        description: "Successfully posted voting result on-chain",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.log("error", error);
+    }
   };
 
   useEffect(() => {
@@ -83,6 +110,7 @@ const Vote = () => {
           router.push("/");
         }
       }
+      await loadWeb3Data(kit.connection.web3.currentProvider);
       setLoading(false);
     };
     getData();
@@ -189,7 +217,7 @@ const Vote = () => {
                       <Button
                         colorScheme="orange"
                         className="w-full"
-                        // onClick={}
+                        onClick={postResult}
                       >
                         Commit Vote Result
                       </Button>
