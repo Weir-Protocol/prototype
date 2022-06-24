@@ -6,6 +6,8 @@ const Footer = () => {
           <a
             href="https://github.com/Weir-Protocol/prototype"
             className="font-bold text-sm"
+            target="_blank"
+            rel="noreferrer"
           >
             GitHub
           </a>

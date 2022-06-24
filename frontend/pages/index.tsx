@@ -10,23 +10,23 @@ import OracleIcon from "../public/assets/weir-oo.svg";
 const cardData: { icon: any; title: string; description: string }[] = [
   {
     title: "Community friendly",
-    description: "Weir is a Web3 native protocol with a community-first focus",
+    description: "Weir is focussed on DAOs and decentralized communities",
     icon: CommunityIcon,
   },
   {
-    title: "No limits on design",
-    description: "Request any arbitrary data to power your protocol",
+    title: "Voting Simplified",
+    description: "DAO members can effortlessly register their votes",
     icon: DocumentIcon,
   },
   {
-    title: "Provably secure",
+    title: "Secure",
     description:
-      "Weir's oracle is the only one that offers economic guarantees",
+      "Weir's token lock and control mechanism is inherently secure",
     icon: LockIcon,
   },
   {
-    title: "Minimize oracle usage",
-    description: "Fewer calls means a smaller attack vector and lower fees",
+    title: "Custom Oracle",
+    description: "Weir's oracle commits vote results on-chain",
     icon: OracleIcon,
   },
 ];
