@@ -1,11 +1,30 @@
 interface Props {
-  valueLocked: number;
-  numberOfTokens: number;
+  weirData: any;
+  price: number;
 }
 
+import { useToast } from "@chakra-ui/react";
 import { BigNumber, ethers } from "ethers";
+import Link from "next/link";
 
 const WeirCard = ({ weirData, price }: Props) => {
+  const toast = useToast();
+
+  const copyShareableLink = () => {
+    const baseURL =
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3000"
+        : "PRODUCTION_URL_HERE";
+    navigator.clipboard.writeText(`${baseURL}/vote/${weirData?.daotoken}`);
+    toast({
+      title: "Copied to clipboard!",
+      description: "Copied the shareable link to clipboard",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full gap-[20px] lg:gap-[50px] mt-[32px]">
       <div className="col-span-1 flex items-center justify-center flex-col w-full p-[30px] rounded-[6px] bg-zinc-800">
@@ -27,26 +46,66 @@ const WeirCard = ({ weirData, price }: Props) => {
         <h2 className="uppercase font-bold text-xl">
           Your Bonus Contribution: &nbsp;
           <span className="text-primary">
-            {(parseFloat(ethers.utils.formatEther(weirData.amount))/2).toString()} DAO tokens
-          </span> <br />{" "} <br/>
+            {(
+              parseFloat(ethers.utils.formatEther(weirData.amount)) / 2
+            ).toString()}{" "}
+            DAO tokens
+          </span>{" "}
+          <br /> <br />
           Bonus DAO Tokens Utilization
         </h2>
         <div className="mt-[20px] grid grid-cols-1 md:grid-cols-2">
-        <div className="border border-zinc-800 px-[20px] py-[10px] rounded-bl flex items-center justify-between w-full">
+          <div className="border border-zinc-800 px-[20px] py-[10px] rounded-t md:rounded-t-none md:rounded-tl flex items-center justify-between w-full">
             <span className="font-semibold">Platform Fee</span>
             <span>20%</span>
           </div>
-          <div className="border border-zinc-800 px-[20px] py-[10px] rounded-tl flex items-center justify-between w-full">
+          <div className="border border-zinc-800 px-[20px] py-[10px] md:rounded-tr flex items-center justify-between w-full">
             <span className="font-semibold">Collateral mechanism of tUSD</span>
             <span>30%</span>
           </div>
-          <div className="border border-zinc-800 px-[20px] py-[10px] rounded-tr flex items-center justify-between w-full">
+          <div className="border border-zinc-800 px-[20px] py-[10px] md:rounded-bl flex items-center justify-between w-full">
             <span className="font-semibold">Purchase of Carbon Credits</span>
             <span>50%</span>
           </div>
-          <div className="border border-zinc-800 px-[20px] py-[10px] rounded-br flex items-center justify-between w-full">
+          <div className="border border-zinc-800 px-[20px] py-[10px] rounded-b md:rounded-b-none md:rounded-br flex items-center justify-between w-full">
             <span className="font-semibold">Total</span>
             <span>100%</span>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] mt-[20px]">
+          <div className="flex h-full flex-col flex-1">
+            <span className="font-bold uppercase">Voting status</span>
+            <span
+              className={`font-bold ${
+                parseInt(weirData?.deadline?._hex) * 1000 > new Date().getTime()
+                  ? "text-green-400"
+                  : "text-indigo-400"
+              }`}
+            >
+              {parseInt(weirData?.deadline?._hex) * 1000 > new Date().getTime()
+                ? "Voting active"
+                : "Voting closed"}
+            </span>
+          </div>
+          <div className="font-semibold flex h-full flex-col flex-1">
+            <span>
+              {weirData?.releasedLiquidity
+                ? "Liquidity Released to the Pool"
+                : "Liquidity not Released"}
+            </span>
+          </div>
+          <div className="flex flex-col flex-1">
+            <Link href={`/vote/${weirData?.daotoken}`}>
+              <a className="block font-bold w-full bg-primary rounded text-center px-[20px] py-[10px]">
+                Vote
+              </a>
+            </Link>
+            <a
+              onClick={copyShareableLink}
+              className="block mt-[10px] font-bold w-full bg-green-500 rounded text-center px-[20px] py-[10px]"
+            >
+              Copy link
+            </a>
           </div>
         </div>
       </div>
