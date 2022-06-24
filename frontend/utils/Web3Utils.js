@@ -1,6 +1,6 @@
 import { useCelo } from "@celo/react-celo";
 import { ethers, providers, Contract } from "ethers";
-import { CeloProvider } from "@celo-tools/celo-ethers-wrapper";
+import { CeloProvider, CeloWallet } from "@celo-tools/celo-ethers-wrapper";
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 import {
@@ -59,8 +59,9 @@ export const Web3Utils = ({ children }) => {
 
     const fetchWeirOfDAO = async (address) => {
         try {
-            const weir = await weirFactory.getTokenOfDAO(address);
-            if (weir != ethers.constants.AddressZero) {
+            const token = await weirFactory.getTokenOfDAO(address);
+            const weir = await weirFactory.getWeirOfToken(token);
+            if (token != ethers.constants.AddressZero && weir != ethers.constants.AddressZero) {
                 return weir;
             } else {
                 return null;
@@ -97,7 +98,7 @@ export const Web3Utils = ({ children }) => {
 
     const postVoteResult = async (result, daoTokenAddress, lpAddress, amount) => {
         try {
-            const oracle = new ethers.Wallet(process.env.PRIVATE_KEY);
+            const oracle = new CeloWallet(process.env.PRIVATE_KEY, provider);
 
             const weirAddress = await weirFactory.getWeirOfToken(daoTokenAddress);
             const weirController = new Contract(weirAddress, WeirController, provider);
@@ -108,6 +109,7 @@ export const Web3Utils = ({ children }) => {
                 (parseFloat(ethers.utils.formatEther(currentReserve.reserve1))
                  / 
                 parseFloat(ethers.utils.formatEther(currentReserve.reserve0)));
+    
             if (result == true) {
                 const stablecoin = new Contract(StablecoinAddress, ERC20, provider);
                 const tx1 = await stablecoin
