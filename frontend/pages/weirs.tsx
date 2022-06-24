@@ -1,10 +1,5 @@
-import {
-  useToast
-} from "@chakra-ui/react";
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useToast } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCelo } from "@celo/react-celo";
 import useWeb3Utils from "../utils/Web3Utils";
@@ -16,14 +11,14 @@ import DefaultLayout from "../layouts/DefaultLayout";
 import { BigNumber, ethers } from "ethers";
 
 interface WeirData {
-  releasedLiquidity: boolean,
-  dao: string,
-  daotoken: string,
-  stablecoin: string,
-  liquidityPool: string,
-  amount: BigNumber,
-  deadline: BigNumber,
-  daoName: string
+  releasedLiquidity: boolean;
+  dao: string;
+  daotoken: string;
+  stablecoin: string;
+  liquidityPool: string;
+  amount: BigNumber;
+  deadline: BigNumber;
+  daoName: string;
 }
 
 const Weir: NextPage = () => {
@@ -35,12 +30,8 @@ const Weir: NextPage = () => {
   const { address, kit } = useCelo();
   const toast = useToast();
 
-  const {
-    loadWeb3Data,
-    fetchWeirOfDAO,
-    fetchWeirData,
-    fetchTokenPrice
-  } = useWeb3Utils();
+  const { loadWeb3Data, fetchWeirOfDAO, fetchWeirData, fetchTokenPrice } =
+    useWeb3Utils() as any;
 
   useEffect(() => {
     async function load() {
@@ -70,41 +61,28 @@ const Weir: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, tokenPrice]);
 
-  return (
-    loading ? (
-      <DefaultLayout>
-        <div className="min-h-[90vh] flex flex-col justify-start items-start w-full mx-auto my-[50px]">
-          <h1 className="text-2xl font-bold">Loading...</h1>
+  return loading ? (
+    <DefaultLayout>
+      <div className="min-h-[90vh] flex flex-col justify-start items-start w-full mx-auto my-[50px]">
+        <h1 className="text-2xl font-bold">Loading...</h1>
+      </div>
+    </DefaultLayout>
+  ) : weirData !== undefined ? (
+    <DefaultLayout>
+      <div className="min-h-[90vh] flex flex-col justify-start items-start w-full mx-auto my-[50px]">
+        <h1 className="text-2xl font-bold">Your Weirs</h1>
+        <div className="flex flex-col w-full">
+          <WeirCard weirData={weirData} price={tokenPrice} />
         </div>
-      </DefaultLayout>
-    )
-    :
-    (
-      weirData !== undefined ?
-      <DefaultLayout>
-        <div className="min-h-[90vh] flex flex-col justify-start items-start w-full mx-auto my-[50px]">
-          <h1 className="text-2xl font-bold">Your Weirs</h1>
-          <div className="flex flex-col w-full">
-            {Array(1)
-              .fill(null)
-              .map((_, i) => (
-                <WeirCard 
-                  weirData={weirData}
-                  price={tokenPrice}
-                  key={i} 
-                />
-              ))}
-          </div>
-        </div>
-      </DefaultLayout> 
-    :
-      <DefaultLayout>
-        <div className="min-h-[90vh] flex flex-col justify-start items-start w-full mx-auto my-[50px]">
-          <h1 className="text-2xl font-bold">No Weirs found for your account</h1>
-        </div>
-      </DefaultLayout>
-    )
+      </div>
+    </DefaultLayout>
+  ) : (
+    <DefaultLayout>
+      <div className="min-h-[90vh] flex flex-col justify-start items-start w-full mx-auto my-[50px]">
+        <h1 className="text-2xl font-bold">No Weirs found for your account</h1>
+      </div>
+    </DefaultLayout>
   );
-}
+};
 
 export default Weir;
