@@ -31,6 +31,12 @@ const cardData: { icon: any; title: string; description: string }[] = [
   },
 ];
 
+const steps: string[] = [
+  "Create a weir using your DAO token and a (DAO token - Stablecoin) Liquidity Pool and set a Key Performance Indicator(KPI) target relevant to the purpose/goal of your DAO",
+  "Share the voting link with your DAO members and endorse them to vote",
+  "Once the voting deadline is over, view votes received and commit the voting result on-chain",
+];
+
 const Home: NextPage = () => {
   return (
     <DefaultLayout>
@@ -40,9 +46,15 @@ const Home: NextPage = () => {
           <span className="text-primary">DAO2Stablecoin Protocol</span> for
           sustainable liquidity
         </h1>
-        <button className="text-lg font-bold px-[50px] py-[10px] bg-primary rounded">
+        <a
+          href="#get-started"
+          className="text-lg font-bold px-[50px] py-[10px] bg-primary rounded"
+        >
           Get Started
-        </button>
+        </a>
+        <small className="font-bold mt-[12px] text-sm">
+          Weir Protocol is live on Celo Alfajores Testnet
+        </small>
       </div>
       <div className="py-[60px]">
         <h2 className="text-lg uppercase font-bold mb-[32px]">Why use Weir?</h2>
@@ -50,6 +62,24 @@ const Home: NextPage = () => {
           {cardData.map(({ title, description, icon }, i) => (
             <Card title={title} description={description} icon={icon} key={i} />
           ))}
+        </div>
+      </div>
+      <div className="py-[60px]" id="get-started">
+        <h2 className="text-lg uppercase font-bold mb-[32px]">
+          As a DAO how can you use Weir Protocol?
+        </h2>
+        <div className="grid md:grid-col-4 lg:grid-cols-6 gap-[20px]">
+          {steps.map((step, i) => (
+            <>
+              <div className="col-span-1 font-bold">Step {i + 1}:</div>
+              <div className="col-span-3 lg:col-span-5">{step}</div>
+            </>
+          ))}
+          <div className="col-span-1"></div>
+          <div className="col-span-3 lg:col-span-5">
+            Receive liquidity into the liquidity pool if your DAO has achieved
+            the KPI target
+          </div>
         </div>
       </div>
     </DefaultLayout>
