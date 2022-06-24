@@ -81,8 +81,17 @@ const WeirCard = ({ weirData, price }: Props) => {
         </div>
       </div>
       <p className="font-bold text-lg my-[20px]">
-        Your DAO tokens have been used to purchase carbon credits and offset x
-        tons of CO2
+        Your DAO tokens have been used to purchase carbon credits and offset{" "}
+        <span className="text-primary">
+          {(
+            (price *
+              0.25 *
+              parseFloat(ethers.utils.formatEther(weirData.amount))) /
+            14
+          ).toFixed(2)}{" "}
+          tons
+        </span>{" "}
+        of CO2
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[20px] mt-[20px]">
         <div className="flex h-full flex-col flex-1">
