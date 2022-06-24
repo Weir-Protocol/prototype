@@ -132,13 +132,13 @@ const WeirCard = ({ weirData, price }: Props) => {
             </a>
           </Link>
         </div>
-        {parseInt(weirData?.deadline?._hex) * 1000 < new Date().getTime() && (
+        {parseInt(weirData?.deadline?._hex) * 1000 > new Date().getTime() && (
           <div className="flex flex-col flex-1">
             <a
               onClick={copyShareableLink}
               className="block font-bold w-full bg-green-500 rounded text-center px-[20px] py-[10px]"
             >
-              Copy link to vote
+              Copy voting link
             </a>
             <span>
               Share the voting link with your DAO members
