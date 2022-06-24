@@ -1,7 +1,6 @@
-import { useCelo } from "@celo/react-celo";
 import { ethers, providers, Contract } from "ethers";
 import { CeloProvider, CeloWallet } from "@celo-tools/celo-ethers-wrapper";
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import {
     DAOtokenAddress,
@@ -11,7 +10,6 @@ import {
 } from "../../hardhat/contractAddress";
 
 import ERC20 from "../abi/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json";
-import IRouter from "../abi/contracts/interfaces/IRouter.sol/IRouter.json";
 import ILiquidityPool from "../abi/contracts/interfaces/ILiquidityPool.sol/ILiquidityPool.json";
 import WeirFactory from "../abi/contracts/WeirFactory.sol/WeirFactory.json";
 import WeirController from "../abi/contracts/WeirController.sol/WeirController.json";
@@ -126,22 +124,13 @@ export const Web3Utils = ({ children }) => {
         }
     };
 
-    const display = async (Web3Provider) => {
-        await loadWeb3Data(Web3Provider);
-        weirFactory = new Contract(WeirFactoryAddress, WeirFactory, provider);
-        const address = await signer.getAddress();
-        const weir = await fetchWeir(address);
-        console.log(weir);
-    };
-
     const values = useMemo(() => ({
         loadWeb3Data,
         createWeir,
         fetchWeirOfDAO,
         fetchWeirData,
         fetchTokenPrice,
-        postVoteResult,
-        display
+        postVoteResult
     }),
     [
         chainId

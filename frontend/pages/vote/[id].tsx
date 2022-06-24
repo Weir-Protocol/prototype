@@ -24,7 +24,7 @@ const Vote = () => {
   const {
     loadWeb3Data,
     postVoteResult
-  } = useWeb3Utils();
+  } = useWeb3Utils() as any;
   const toast = useToast();
   const url = router.query.id;
 
@@ -35,6 +35,13 @@ const Vote = () => {
     await updateDoc(_dao, {
       yes: increment(1),
     });
+    toast({
+      title: "Voted",
+      description: "Successfully posted your vote",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
     // retrieve todos
   };
 
@@ -44,6 +51,13 @@ const Vote = () => {
     // update the doc by setting done to true
     await updateDoc(_dao, {
       no: increment(1),
+    });
+    toast({
+      title: "Voted",
+      description: "Successfully posted your vote",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
     });
     // retrieve todos
   };

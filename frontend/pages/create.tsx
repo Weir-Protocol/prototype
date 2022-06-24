@@ -46,10 +46,8 @@ const Create = () => {
 
   const {
     loadWeb3Data,
-    createWeir,
-    fetchWeirOfDAO,
-    display
-  } = useWeb3Utils();
+    createWeir
+  } = useWeb3Utils() as any;
 
   useEffect(() => {
     async function load() {

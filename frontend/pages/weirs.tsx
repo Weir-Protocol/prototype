@@ -30,8 +30,12 @@ const Weir: NextPage = () => {
   const { address, kit } = useCelo();
   const toast = useToast();
 
-  const { loadWeb3Data, fetchWeirOfDAO, fetchWeirData, fetchTokenPrice } =
-    useWeb3Utils() as any;
+  const { 
+    loadWeb3Data, 
+    fetchWeirOfDAO, 
+    fetchWeirData, 
+    fetchTokenPrice 
+  } = useWeb3Utils() as any;
 
   useEffect(() => {
     async function load() {

@@ -118,6 +118,7 @@ const WeirCard = ({ weirData, price }: Props) => {
           <a 
             href={`https://alfajores-blockscout.celo-testnet.org/address/${weirData?.liquidityPool}`} 
             target="_blank"
+            rel="noreferrer"
           >
             {weirData?.releasedLiquidity
               && "View Pool"
