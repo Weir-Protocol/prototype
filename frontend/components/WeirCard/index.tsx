@@ -14,7 +14,7 @@ const WeirCard = ({ weirData, price }: Props) => {
     const baseURL =
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000"
-        : "PRODUCTION_URL_HERE";
+        : "https://weirprotocol.vercel.app";
     navigator.clipboard.writeText(`${baseURL}/vote/${weirData?.daotoken}`);
     toast({
       title: "Copied to clipboard!",
@@ -114,22 +114,34 @@ const WeirCard = ({ weirData, price }: Props) => {
               ? "Liquidity Released to the Pool"
               : "Liquidity not Released"}
           </span>
+          <br/>
+          <a 
+            href={`https://alfajores-blockscout.celo-testnet.org/address/${weirData?.liquidityPool}`} 
+            target="_blank"
+          >
+            {weirData?.releasedLiquidity
+              && "View Pool"
+            }
+          </a>
         </div>
         <div className="flex flex-col flex-1">
           <Link href={`/vote/${weirData?.daotoken}`}>
             <a className="block font-bold w-full bg-primary rounded text-center px-[20px] py-[10px]">
-              Vote
+              View Voting
             </a>
           </Link>
         </div>
-        {parseInt(weirData?.deadline?._hex) * 1000 > new Date().getTime() && (
+        {parseInt(weirData?.deadline?._hex) * 1000 < new Date().getTime() && (
           <div className="flex flex-col flex-1">
             <a
               onClick={copyShareableLink}
               className="block font-bold w-full bg-green-500 rounded text-center px-[20px] py-[10px]"
             >
-              Copy link
+              Copy link to vote
             </a>
+            <span>
+              Share the voting link with your DAO members
+            </span>
           </div>
         )}
       </div>

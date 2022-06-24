@@ -182,7 +182,7 @@ const Create = () => {
             type="text"
             value={DAOName}
             onChange={(e) => setDAOName(e.target.value)}
-            placeholder="Enter name of your DAO"
+            placeholder="Enter the name of your DAO"
             required
           />
           <FormLabel className="mt-[10px]" htmlFor="daoTokenAddress">
@@ -192,7 +192,7 @@ const Create = () => {
             id="daoTokenAddress"
             type="text"
             value={DAOTokenAddress}
-            placeholder="Enter address of the DAO token"
+            placeholder="Enter the address of you DAO token contract"
             onChange={(e) => setDAOTokenAddress(e.target.value)}
             required
           />
@@ -236,7 +236,7 @@ const Create = () => {
             rows={5}
             resize="none"
             value={KPITarget}
-            placeholder="Enter KPI target"
+            placeholder="Enter your DAO's Key Perfomance Indicator (KPI) target"
             onChange={(e) => setKPITarget(e.target.value)}
             required
           />
@@ -247,6 +247,7 @@ const Create = () => {
             id="deadline"
             placeholder="Select the deadline of the vote"
             type="date"
+            min={(new Date()).toISOString().substring(0, 10)}
             value={deadlineOfVote}
             onChange={(e) => setDeadlineOfVote(e.target.value)}
             required
@@ -282,6 +283,7 @@ const Create = () => {
               ))}
             </div>
           )}
+          <br/><br/>
           <Button
             isLoading={loading}
             loadingText="Creating..."
@@ -289,7 +291,7 @@ const Create = () => {
             bg="twitter.500"
             className="mt-[20px] w-full"
           >
-            Create
+            Approve Tokens and Create Weir
           </Button>
         </form>
       </div>
