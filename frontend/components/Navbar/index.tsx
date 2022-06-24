@@ -11,7 +11,7 @@ const navLinks: { text: string; link: string }[] = [
   {
     text: "Weirs",
     link: "/weirs",
-  }
+  },
 ];
 
 const Navbar = () => {
@@ -72,7 +72,9 @@ const Navbar = () => {
             suppressHydrationWarning
             onClick={address ? destroy : connectWallet}
           >
-            {address ? `Disconnect wallet` : "Connect to a wallet"}
+            {address
+              ? `${address.slice(0, 5)}...${address.slice(-5)}`
+              : "Connect to a wallet"}
           </button>
         </div>
         <div
